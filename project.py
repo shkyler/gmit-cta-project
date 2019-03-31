@@ -4,26 +4,17 @@ import time
 import math
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 '''
   seed the RNG to ensure that the same lists are used all the time - it makes comparisons between
   the algorithms easier to replicate
 '''
-# create the arrays to be sorted 
-# seed the RNG so the program runs the same everytime
-np.random.seed(100)
-arr100 = [np.random.randint(1000) for i in range(100)]
-arr250 = [np.random.randint(1000) for i in range(250)]
-arr500 = [np.random.randint(1000) for i in range(500)]
-arr750 = [np.random.randint(1000) for i in range(750)]
-arr1000 = [np.random.randint(1000) for i in range(1000)]
-arr1250 = [np.random.randint(1000) for i in range(1250)]
-arr2500 = [np.random.randint(1000) for i in range(2500)]
-arr3750 = [np.random.randint(1000) for i in range(3750)]
-arr5000 = [np.random.randint(1000) for i in range(5000)]
-arr6250 = [np.random.randint(1000) for i in range(6250)]
-arr7500 = [np.random.randint(1000) for i in range(7500)]
-arr8750 = [np.random.randint(1000) for i in range(8750)]
-arr10000 = [np.random.randint(1000) for i in range(10000)]
+# create a function to be used for generating the test arrays
+def arrayCreate(size):
+  # seed the RNG
+  np.random.seed(100)
+  # return the array of the selected size
+  return [np.random.randint(1000) for i in range(size)]
 
 
 # Section 2 - Define the 5 Sorting Algorithms to be Used
@@ -39,7 +30,18 @@ def bubble(alist):
                 temp = alist[i]
                 alist[i] = alist[i+1]
                 alist[i+1] = temp
+# define the bubblesort algorithm - note this needs comments
+def insertion(alist):
+   for index in range(1,len(alist)):
 
+     currentvalue = alist[index]
+     position = index
+
+     while position>0 and alist[position-1]>currentvalue:
+         alist[position]=alist[position-1]
+         position = position-1
+
+     alist[position]=currentvalue
 
 # Section 3 - Define the timer functions to be used
 
@@ -54,35 +56,43 @@ def timer(a,sort_algo):
 def average_time(runs, data, sort_algo):
   # use an array to store the results of each trial
   trial_times = []
-  # use a while loop to run time the algorithm th e specified number of times 
+  # use a while loop to run the algorithm the specified number of times 
   counter = 0
   while counter < runs:
     trial_times.append(timer(data,sort_algo))
     counter = counter + 1
-  # return the average time it take sto run the algorithm  
+  # return the average time it takes to run the algorithm  
   return (sum(trial_times)/len(trial_times))
 
 # Section 4 - Formatting the output
+
+# create a function to carry out the trials
+def algoTrial(algo, testSize):
+  # this function takes an algorithm and test size and returns the average result of 10 trials in ms - formatted to 3 decimal places
+  return float("{:10.3f}".format(average_time(10,arrayCreate(testSize),algo)*1000))
+
+# create a column creator function
+# pass a list of sorting algorithms and a test size
+def colCreate(algos, testSize):  
+  # the algorithm will test each algorthim for a given test size ..
+  col = []
+  for i in algos:
+    col.append(algoTrial(i, testSize))
+  # .. return a list of results  
+  return(col)  
+
 # create a list of the sorting algorithms to be tested
-sorts = ['Bubble Sort']
-# run the trials and store results in lists
-trial100 = [float("{:10.3f}".format(average_time(10,arr100,bubble)*1000))]
-trial250 = [float("{:10.3f}".format(average_time(10,arr250,bubble)*1000))]
-trial500 = [float("{:10.3f}".format(average_time(10,arr500,bubble)*1000))]
-trial750 = [float("{:10.3f}".format(average_time(10,arr750,bubble)*1000))]
-trial1000 = [float("{:10.3f}".format(average_time(10,arr1000,bubble)*1000))]
-trial1250 = [float("{:10.3f}".format(average_time(10,arr1250,bubble)*1000))]
-trial2500 = [float("{:10.3f}".format(average_time(10,arr2500,bubble)*1000))]
-trial3750 = [float("{:10.3f}".format(average_time(10,arr3750,bubble)*1000))]
-trial5000 = [float("{:10.3f}".format(average_time(10,arr5000,bubble)*1000))]
-trial6250 = [float("{:10.3f}".format(average_time(10,arr6250,bubble)*1000))]
-trial7500 = [float("{:10.3f}".format(average_time(10,arr7500,bubble)*1000))]
-trial8750 = [float("{:10.3f}".format(average_time(10,arr8750,bubble)*1000))]
-trial10000 = [float("{:10.3f}".format(average_time(10,arr10000,bubble)*1000))]
+# 'sorts' is used to index the data frame
+sorts = ['Bubble Sort', 'Insertion Sort']
+# 'algorithms' is a list of the function names
+algorithms = [bubble, insertion]
 
 # create an empty pandas data frame to store the data
-data = pd.DataFrame({"size":sorts, "100":trial100,"250":trial250,"500":trial500,"750":trial750,"1000":trial1000,"1250":trial1250,"2500":trial1250,"3750":trial3750,"5000":trial5000,"6250":trial6250,"7500":trial7500, "8750":trial8750, "10000":trial10000})
+data = pd.DataFrame({"size":sorts, "100":colCreate(algorithms,100), "250":colCreate(algorithms,250),"500":colCreate(algorithms,500),"750":colCreate(algorithms,750), "1000":colCreate(algorithms,1000)})
 print(data.to_string(index=False))
+
+#print(data[0,1:5])
+#plt.plot(n,data.loc[:,['Bubble Sort']])
 #print("{:10.3f}".format(average_time(10,arr1250,bubble)*1000))
 
 
