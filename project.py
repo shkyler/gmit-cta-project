@@ -16,7 +16,6 @@ def array_create(size):
   # return the array of the selected size
   return [np.random.randint(1000) for i in range(size)]
 
-
 # Section 2 - Define the 5 Sorting Algorithms to be Used
 # define the bubblesort algorithm - http://interactivepython.org/courselib/static/pythonds/SortSearch/TheInsertionSort.html
 def bubble_sort(alist):
@@ -44,7 +43,18 @@ def insertion_sort(alist):
          position = position-1
 
      alist[position]=currentvalue
+# define the selection sorting algorithm - http://interactivepython.org/runestone/static/pythonds/SortSearch/TheSelectionSort.html
+# note - this needs comments
+def selection_sort(alist):
+   for fillslot in range(len(alist)-1,0,-1):
+       positionOfMax=0
+       for location in range(1,fillslot+1):
+           if alist[location]>alist[positionOfMax]:
+               positionOfMax = location
 
+       temp = alist[fillslot]
+       alist[fillslot] = alist[positionOfMax]
+       alist[positionOfMax] = temp
 # Section 3 - Define the timer functions to be used
 
 # define a function that takes an array and a sorting algorithm and times how long it takes to run
@@ -85,16 +95,16 @@ def col_create(algos, test_size):
 
 # create a list of the sorting algorithms to be tested
 # 'sorts' is used to index the data frame
-sorts = ['Bubble Sort', 'Insertion Sort']
+sorts = ['Bubble Sort', 'Insertion Sort', 'Selection Sort']
 # 'algorithms' is a list of the function names
 n = [100,250,500,750, 1000, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 10000]
-algorithms = [bubble_sort, insertion_sort]
+algorithms = [bubble_sort, insertion_sort, selection_sort]
 # create an empty pandas data frame to store the data
 data = pd.DataFrame({"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorithms,250),"500":col_create(algorithms,500),"750":col_create(algorithms,750), "1000":col_create(algorithms,1000),"1250":col_create(algorithms,1250),"2500":col_create(algorithms,2500), "3750":col_create(algorithms,3750), "5000":col_create(algorithms,5000), "6250":col_create(algorithms,6250), "7500":col_create(algorithms,7500), "8750":col_create(algorithms,8750), "10000":col_create(algorithms,10000)})
 data.set_index("size",inplace=True)
 print(data.to_string())
 
-for i in range(2):
+for i in range(3):
   plt.plot(n,data.iloc[i])
 
 plt.show()
