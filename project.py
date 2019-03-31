@@ -18,7 +18,7 @@ def arrayCreate(size):
 
 
 # Section 2 - Define the 5 Sorting Algorithms to be Used
-# define the bubblesort algorithm
+# define the bubblesort algorithm - http://interactivepython.org/courselib/static/pythonds/SortSearch/TheInsertionSort.html
 def bubble(alist):
     # outer for-loop runs from the last item in the list to the first in steps of 1
     for passnum in range(len(alist)-1,0,-1):
@@ -30,7 +30,9 @@ def bubble(alist):
                 temp = alist[i]
                 alist[i] = alist[i+1]
                 alist[i+1] = temp
-# define the bubblesort algorithm - note this needs comments
+                
+# define the insertion sort algorithm http://interactivepython.org/runestone/static/pythonds/SortSearch/TheBubbleSort.html
+# note this needs comments
 def insertion(alist):
    for index in range(1,len(alist)):
 
