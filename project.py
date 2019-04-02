@@ -9,12 +9,6 @@ import matplotlib.pyplot as plt
   seed the RNG to ensure that the same lists are used all the time - it makes comparisons between
   the algorithms easier to replicate
 '''
-# create a function to be used for generating the test arrays
-def array_create(size):
-  # seed the RNG
-  np.random.seed(150)
-  # return the array of the selected size
-  return [np.random.randint(1000) for i in range(size)]
 
 # Section 2 - Define the 5 Sorting Algorithms to be Used
 # define the bubblesort algorithm - http://interactivepython.org/courselib/static/pythonds/SortSearch/TheInsertionSort.html
@@ -55,7 +49,53 @@ def selection_sort(alist):
        temp = alist[fillslot]
        alist[fillslot] = alist[positionOfMax]
        alist[positionOfMax] = temp
+
+# define the merge sort algorithm - http://interactivepython.org/runestone/static/pythonds/SortSearch/TheMergeSort.html
+# note - this needs comments
+def merge_sort(alist):
+    #print("Splitting ",alist)
+    if len(alist)>1:
+        mid = len(alist)//2
+        lefthalf = alist[:mid]
+        righthalf = alist[mid:]
+
+        merge_sort(lefthalf)
+        merge_sort(righthalf)
+
+        i=0
+        j=0
+        k=0
+        while i < len(lefthalf) and j < len(righthalf):
+            if lefthalf[i] < righthalf[j]:
+                alist[k]=lefthalf[i]
+                i=i+1
+            else:
+                alist[k]=righthalf[j]
+                j=j+1
+            k=k+1
+
+        while i < len(lefthalf):
+            alist[k]=lefthalf[i]
+            i=i+1
+            k=k+1
+
+        while j < len(righthalf):
+            alist[k]=righthalf[j]
+            j=j+1
+            k=k+1
+    #print("Merging ",alist)
+
+# define the counting sort algorithm - 
+# note - this needs comments
+
 # Section 3 - Define the timer functions to be used
+
+# create a function to be used for generating the test arrays
+def array_create(size):
+  # seed the RNG
+  np.random.seed(150)
+  # return the array of the selected size
+  return [np.random.randint(1000) for i in range(size)]
 
 # define a function that takes an array and a sorting algorithm and times how long it takes to run
 def timer(input_array,sort_algo):
@@ -93,22 +133,40 @@ def col_create(algos, test_size):
   # .. return a list of results  
   return(col)  
 
+# define a function that creates a pandas dataframe based on a data dictionary passed to it
+def df_create(data_dict):
+  # create the data frame, set the index to the "size" field and return the dataframe
+  data = pd.DataFrame(data_dict)
+  data.set_index("size",inplace=True)
+  return data
+
+# define a function that creates a pandas dataframe and plot the results based on the data dictionary, test input sizes and sorting algorithms passed to it
+def results_plot(data_dict, test_size, sort_algos):
+  # create a pandas dataframe based on the data passed to it
+  data = df_create(data_dict)
+  # loop through the list of test sizes
+  for i in range(len(sorts)):
+    plt.plot(test_size, data.iloc[i], label=sort_algos[i])
+  plt.xlabel("Input Size, n")  
+  plt.ylabel("Average Running Time, milliseconds")
+  plt.title ("Benchmarking Sorting Algorithms")
+  plt.legend()
+  plt.show()
+
 # create a list of the sorting algorithms to be tested
 # 'sorts' is used to index the data frame
-sorts = ['Bubble Sort', 'Insertion Sort', 'Selection Sort']
+sorts = ['Bubble Sort', 'Insertion Sort', 'Selection Sort', 'Merge Sort']
 # 'algorithms' is a list of the function names
-n = [100,250,500,750, 1000, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 10000]
-algorithms = [bubble_sort, insertion_sort, selection_sort]
-# create an empty pandas data frame to store the data
-data = pd.DataFrame({"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorithms,250),"500":col_create(algorithms,500),"750":col_create(algorithms,750), "1000":col_create(algorithms,1000),"1250":col_create(algorithms,1250),"2500":col_create(algorithms,2500), "3750":col_create(algorithms,3750), "5000":col_create(algorithms,5000), "6250":col_create(algorithms,6250), "7500":col_create(algorithms,7500), "8750":col_create(algorithms,8750), "10000":col_create(algorithms,10000)})
-data.set_index("size",inplace=True)
-print(data.to_string())
+algorithms = [bubble_sort, insertion_sort, selection_sort, merge_sort]
+# n_trial is a list of input sizes to be tested
+n_trial = [100,250,500,750, 1000, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 10000]
+n_test = [100,250,500, 1000]
 
-for i in range(3):
-  plt.plot(n,data.iloc[i])
+# trial is a data distionary used to create the columns for the pandas dataframe
+#trial = {"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorithms,250),"500":col_create(algorithms,500),"750":col_create(algorithms,750), "1000":col_create(algorithms,1000),"1250":col_create(algorithms,1250),"2500":col_create(algorithms,2500), "3750":col_create(algorithms,3750), "5000":col_create(algorithms,5000), "6250":col_create(algorithms,6250), "7500":col_create(algorithms,7500), "8750":col_create(algorithms,8750), "10000":col_create(algorithms,10000)}
+test = {"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorithms,250),"500":col_create(algorithms,500), "1000":col_create(algorithms,1000)}
 
-plt.show()
-
-
+print(df_create(test).to_string())
+results_plot(test, n_test, sorts)
 
 # Section 5 - User Interface
