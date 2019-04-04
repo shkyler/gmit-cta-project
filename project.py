@@ -1,14 +1,13 @@
 ## Patrick Moore - GMIT - G00364753 - Comutational Thinking with Algorithms Project
+# As this program takes a while to load - print a warning to the user
+print("Please be patient while program loads......")
+
 # Section 1 - Import the required libraries for the project
 import time
 import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-'''
-  seed the RNG to ensure that the same lists are used all the time - it makes comparisons between
-  the algorithms easier to replicate
-'''
 
 # Section 2 - Define the 5 Sorting Algorithms to be Used
 # define the bubblesort algorithm - http://interactivepython.org/courselib/static/pythonds/SortSearch/TheInsertionSort.html
@@ -153,6 +152,13 @@ def results_plot(data_dict, test_size, sort_algos):
   plt.legend()
   plt.show()
 
+# define a function that exports the results of the trial to a csv file
+def results_export(data_dict):
+  data = df_create(data_dict)
+  data.to_csv('benchmark.csv')
+
+# Section 5 - User Interface
+
 # create a list of the sorting algorithms to be tested
 # 'sorts' is used to index the data frame
 sorts = ['Bubble Sort', 'Insertion Sort', 'Selection Sort', 'Merge Sort']
@@ -163,10 +169,38 @@ n_trial = [100,250,500,750, 1000, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 1000
 n_test = [100,250,500, 1000]
 
 # trial is a data distionary used to create the columns for the pandas dataframe
-#trial = {"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorithms,250),"500":col_create(algorithms,500),"750":col_create(algorithms,750), "1000":col_create(algorithms,1000),"1250":col_create(algorithms,1250),"2500":col_create(algorithms,2500), "3750":col_create(algorithms,3750), "5000":col_create(algorithms,5000), "6250":col_create(algorithms,6250), "7500":col_create(algorithms,7500), "8750":col_create(algorithms,8750), "10000":col_create(algorithms,10000)}
+# trial = {"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorithms,250),"500":col_create(algorithms,500),"750":col_create(algorithms,750), "1000":col_create(algorithms,1000),"1250":col_create(algorithms,1250),"2500":col_create(algorithms,2500), "3750":col_create(algorithms,3750), "5000":col_create(algorithms,5000), "6250":col_create(algorithms,6250), "7500":col_create(algorithms,7500), "8750":col_create(algorithms,8750), "10000":col_create(algorithms,10000)}
 test = {"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorithms,250),"500":col_create(algorithms,500), "1000":col_create(algorithms,1000)}
 
-print(df_create(test).to_string())
-results_plot(test, n_test, sorts)
+# the main() function serves as a user interface for the application
+def main():
+  # the user can select one of 4 values
+  allowed_modes = ["graph", "grid", "export", "quit"]
+  mode_chosen = input("How would you like to view the benchmark test? - graph/grid/export/quit   ")
+  # use a while loop to validate the data entered
+  while mode_chosen not in allowed_modes:
+    mode_chosen = input("How would you like to view the benchmark test? - graph/grid/export/quit  ")
+  # use a conditional to decide which fucntions to call
+  # note that it recursively calls the main() function until the user chooses quit  
+  if mode_chosen == "graph":
+    results_plot(test, n_test, sorts)
+    main()
+  elif mode_chosen == "grid":  
+    print(df_create(test).to_string())
+    main()
+  elif mode_chosen == "export":
+    results_export(test) 
+    main() 
+  else:
+    quit()
 
-# Section 5 - User Interface
+
+# The program starts here by printing the splash screen
+print('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')          
+print('*                                                                             *')
+print('*                      Benchmarking Sorting Algorithms                        *')
+print('*                                                                             *')
+print('*              Written by Patrick Moore, GMIT, G00364753, 2019                *')
+print('*                                                                             *')
+print('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
+main()
