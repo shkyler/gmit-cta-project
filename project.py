@@ -175,17 +175,17 @@ test = {"size":sorts, "100":col_create(algorithms,100), "250":col_create(algorit
 # the main() function serves as a user interface for the application
 def main():
   # the user can select one of 4 values
-  allowed_modes = ["graph", "grid", "export", "quit"]
-  mode_chosen = input("How would you like to view the benchmark test? - graph/grid/export/quit   ")
+  allowed_modes = ["graph", "table", "export", "quit"]
+  mode_chosen = input("How would you like to view the benchmark test? - graph/table/export/quit   ")
   # use a while loop to validate the data entered
   while mode_chosen not in allowed_modes:
-    mode_chosen = input("How would you like to view the benchmark test? - graph/grid/export/quit  ")
+    mode_chosen = input("How would you like to view the benchmark test? - graph/table/export/quit  ")
   # use a conditional to decide which fucntions to call
   # note that it recursively calls the main() function until the user chooses quit  
   if mode_chosen == "graph":
     results_plot(test, n_test, sorts)
     main()
-  elif mode_chosen == "grid":  
+  elif mode_chosen == "table":  
     print(df_create(test).to_string())
     main()
   elif mode_chosen == "export":
