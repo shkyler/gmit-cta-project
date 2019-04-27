@@ -10,6 +10,8 @@ The repository contains:
 * `project.py` - a Python script containing the code used to compare a selection of sorting algorithms
 * this `README.md` file
 * an `img` folder containing images for the project
+* a `spreadsheets` folder containing spreadsheets used in the project
+* an `outputs` folder containing the outputs from my benchmark trials
 
 ### Dependancies
 
