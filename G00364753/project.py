@@ -92,7 +92,6 @@ def merge_sort(alist):
     return alist        
 
 # define the counting sort algorithm - https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-search-and-sorting-exercise-10.php
-# note - this needs comments
 def counting_sort(array1):
     # note that this is adapted code
     # i have hard coded 1000 in as the max value becase my array generator
